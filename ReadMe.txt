@@ -1,0 +1,1 @@
+This is the whole project folder. There is a folder within it named "Builds" in which the stand alone build can be found.
