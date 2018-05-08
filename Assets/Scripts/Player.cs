@@ -20,15 +20,22 @@ public class Player : MonoBehaviour {
 	Vector2 evadeDirection;
 	public int hitPoints = 100;
 	public Collider playerHitzone;
+	public Animator attackAnimator;
+	public bool attack2_P;
+	public AudioSource P_attackSound;
 
 	playerAttackCode attack;
 	//attackCode aCode;
 
 	private void Start()
 	{
+
+
 		//aCode = GetComponentInChildren<attackCode> ();
 		//aCode.enabled = false;
         attack = GetComponentInChildren<playerAttackCode>();
+		attackAnimator = GetComponentInChildren<Animator> ();
+		attack2_P = false;
 
 		if (Camera.main != null)
 		{
@@ -46,7 +53,8 @@ public class Player : MonoBehaviour {
 			rb.velocity = Vector3.zero;
 
 			if (Input.GetKey (KeyCode.Space) && recoverTimer <= 0.0f && evadeTimer <= 0.0f) {
-				evadeTimer = 0.1f;
+				Debug.Log ("Evading");
+				evadeTimer = 0.2f;
 				evadeDirection = new Vector2 (h, v);
 				isEvading = true;
 			}
@@ -67,8 +75,8 @@ public class Player : MonoBehaviour {
 			}
 
 			if (evadeTimer > 0.0f) {
-				v = evadeDirection.y * movementSpeed * 1.02f;
-				h = evadeDirection.x * movementSpeed * 1.02f;
+				v = evadeDirection.y * movementSpeed * 1.0f;
+				h = evadeDirection.x * movementSpeed * 1.0f;
 			}
 
 			if (recoverTimer > 0.0f) {
@@ -93,12 +101,12 @@ public class Player : MonoBehaviour {
 				rb.MovePosition(rb.position + forward * v * Time.deltaTime + m_Cam.right * h * Time.deltaTime);
 				if (moveVector.sqrMagnitude > 0.0f)
 				{
-					rb.MoveRotation(Quaternion.LookRotation(new Vector3 (moveVector.x, 0f, moveVector.z)));
+					//rb.MoveRotation(Quaternion.LookRotation(new Vector3 (moveVector.x, 0f, moveVector.z)));
 				}
 			} else {
 				var finalPosition = new Vector3 (Target.position.x, transform.position.y, Target.position.z);
 				finalPosition = finalPosition + Target.forward;
-				rb.MoveRotation(Quaternion.LookRotation(Target.position - rb.position));
+				//rb.MoveRotation(Quaternion.LookRotation(Target.position - rb.position));
 				rb.MovePosition(Vector3.MoveTowards (rb.position, finalPosition, chargeSpeed));
 
 				if (rb.position == finalPosition) 
@@ -110,16 +118,35 @@ public class Player : MonoBehaviour {
 
 			if (Input.GetButtonDown("Fire1"))
 			{
+
 				//isAutoMoving = true;
-                attack.doDamage = true;
+
+                //attack.doDamage = true;
+				P_attackSound.Play();
+				Debug.Log ("Attacking");
+				if (attack2_P == false) 
+				
+				{
+					attackAnimator.Play ("Player attack");
+					attack2_P = true;
+				}
+
+				else
+				{
+						attackAnimator.Play ("Player attack 2");
+						attack2_P = false;
+					}
+				}
+			
 				//attackTimer = 0.5f;
 				//Debug.Log("making an attack");
 				//aCode.enabled = true;
-			}
-			else
+
+			/*else
 			{
                 attack.doDamage = false;
-			}
+
+			}*/
 
 			//attackTimer -= Time.deltaTime; //timer counts down
 
@@ -135,6 +162,7 @@ public class Player : MonoBehaviour {
 		if (knockBackTimer <= 0) {
 			isKnockBack = false;
 		}
+			
 	}
 
 	public void KnockBack(Vector3 direction)
@@ -151,4 +179,5 @@ public class Player : MonoBehaviour {
 			hitPoints -= damage;
 		}
 	}
+		
 }

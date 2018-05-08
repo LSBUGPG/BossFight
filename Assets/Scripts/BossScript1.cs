@@ -72,9 +72,16 @@ public class BossScript1 : MonoBehaviour
 					yield return null;
 				}
 
-				yield return attack.Attack ();
+                IEnumerator attackCoroutine = attack.Attack();
+                while (attackCoroutine.MoveNext())
+                {
+                    transform.LookAt (Player);
+                    yield return attackCoroutine.Current;
+                }
 			}
-			
+
+			transform.LookAt (Player);
+			yield return null;
 		}
 	}
 }

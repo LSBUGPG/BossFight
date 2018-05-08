@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Boss
   - Pillars
+  - BossHitEffectSpawn
   layers:
   - Default
   - TransparentFX
